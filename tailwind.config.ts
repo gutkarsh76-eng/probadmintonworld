@@ -27,6 +27,13 @@ const config: Config = {
           line:   "#ffffff",
           shadow: "#1b4332",
         },
+        sale: {
+          50:  "#fff1f2",
+          100: "#ffe4e6",
+          500: "#f43f5e",
+          600: "#e11d48",
+          700: "#be123c",
+        },
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
@@ -41,9 +48,14 @@ const config: Config = {
           "50%":  { transform: "translateX(50%)  translateY(-40px) rotate(30deg)" },
           "100%": { transform: "translateX(100%) translateY(0)   rotate(60deg)" },
         },
+        "fade-in-up": {
+          "0%":   { opacity: "0", transform: "translateY(16px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
-        "shuttle-arc": "shuttle-arc 1.8s ease-in-out infinite alternate",
+        "shuttle-arc":  "shuttle-arc 1.8s ease-in-out infinite alternate",
+        "fade-in-up":   "fade-in-up 0.5s ease-out both",
       },
     },
   },
