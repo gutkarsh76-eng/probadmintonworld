@@ -44,9 +44,9 @@
 
   <div class="rspin_8kv7-viewport" id="rspin_8kv7_view">
     <div class="rspin_8kv7-line" id="rspin_8kv7_line">
-      <div class="rspin_8kv7-item">{{ section.settings.msg1_prefix | default: '🚀 Hurry up!' }} <span class="rspin_8kv7-strong">{{ section.settings.msg1_bold | default: '500+ items' }}</span> {{ section.settings.msg1_suffix | default: 'sold in the last 3 days!' }}</div>
-      <div class="rspin_8kv7-item">{{ section.settings.msg2_prefix | default: '🛒 In the carts of' }} <span class="rspin_8kv7-strong">{{ section.settings.msg2_bold | default: '125 people' }}</span> {{ section.settings.msg2_suffix | default: '— buy before its gone!' }}</div>
-      <div class="rspin_8kv7-item">{{ section.settings.msg3_prefix | default: '👀 Trending now!' }} <span class="rspin_8kv7-strong">{{ section.settings.msg3_bold | default: '769 people' }}</span> {{ section.settings.msg3_suffix | default: 'viewed in the last 24 hours!' }}</div>
+      <div class="rspin_8kv7-item">{{ section.settings.msg1_prefix | default: '🚀 Hurry up!' }} <span class="rspin_8kv7-strong"><span class="rspin_8kv7-rand" data-min="400" data-max="600">500</span>+ items</span> {{ section.settings.msg1_suffix | default: 'sold in the last 3 days!' }}</div>
+      <div class="rspin_8kv7-item">{{ section.settings.msg2_prefix | default: '🛒 In the carts of' }} <span class="rspin_8kv7-strong"><span class="rspin_8kv7-rand" data-min="120" data-max="160">125</span> people</span> {{ section.settings.msg2_suffix | default: '— buy before its gone!' }}</div>
+      <div class="rspin_8kv7-item">{{ section.settings.msg3_prefix | default: '👀 Trending now!' }} <span class="rspin_8kv7-strong"><span class="rspin_8kv7-rand" data-min="650" data-max="850">769</span> people</span> {{ section.settings.msg3_suffix | default: 'viewed in the last 24 hours!' }}</div>
     </div>
   </div>
 
@@ -64,6 +64,22 @@
         var n = parseInt(v, 10);
         return isNaN(n) ? fallback : n;
       }
+
+      function randInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function refreshRandNumbers() {
+        var spans = line.querySelectorAll('.rspin_8kv7-rand');
+        for (var i = 0; i < spans.length; i++) {
+          var min = parseInt(spans[i].getAttribute('data-min'), 10);
+          var max = parseInt(spans[i].getAttribute('data-max'), 10);
+          spans[i].textContent = randInt(min, max);
+        }
+      }
+
+      refreshRandNumbers();
+      setInterval(refreshRandNumbers, 10000);
 
       var idx = 0;
       var intervalMs = cssVarInt(root, '--interval-ms', 2500);
