@@ -1,0 +1,243 @@
+<section class="rspin_8kv7" style="
+  --font-size: {{ section.settings.font_size | default: 14 }}px;
+  --interval-ms: 2500;
+  margin-top: {{ section.settings.margin_top | default: 0 }}px;
+  margin-bottom: {{ section.settings.margin_bottom | default: 0 }}px;
+  background: {{ section.settings.bg_color | default: 'transparent' }};
+  padding: 0;
+  display: flex;
+  justify-content: {{ section.settings.alignment | default: 'flex-start' }};
+">
+  <style>
+    .rspin_8kv7 {
+      font-size: var(--font-size);
+      color: {{ section.settings.text_color | default: '#333333' }};
+      width: 100%;
+      font-family: inherit;
+    }
+    .rspin_8kv7 .rspin_8kv7-viewport {
+      position: relative;
+      overflow: hidden;
+      height: {{ section.settings.font_size | default: 14 | plus: 6 }}px;
+      display: flex;
+      justify-content: {{ section.settings.alignment | default: 'flex-start' }};
+    }
+    .rspin_8kv7 .rspin_8kv7-line {
+      display: grid;
+      grid-auto-rows: auto;
+      transition: transform 0.5s ease-in-out;
+      will-change: transform;
+      width: fit-content;
+    }
+    .rspin_8kv7 .rspin_8kv7-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      height: {{ section.settings.font_size | default: 14 | plus: 6 }}px;
+    }
+    .rspin_8kv7 .rspin_8kv7-strong {
+      font-weight: 700;
+      color: {{ section.settings.strong_color | default: '#000000' }};
+    }
+  </style>
+
+  <div class="rspin_8kv7-viewport" id="rspin_8kv7_view">
+    <div class="rspin_8kv7-line" id="rspin_8kv7_line">
+      <div class="rspin_8kv7-item">{{ section.settings.msg1_prefix | default: '🚀 Hurry up!' }} <span class="rspin_8kv7-strong">{{ section.settings.msg1_bold | default: '500+ items' }}</span> {{ section.settings.msg1_suffix | default: 'sold in the last 3 days!' }}</div>
+      <div class="rspin_8kv7-item">{{ section.settings.msg2_prefix | default: '🛒 In the carts of' }} <span class="rspin_8kv7-strong">{{ section.settings.msg2_bold | default: '125 people' }}</span> {{ section.settings.msg2_suffix | default: '— buy before its gone!' }}</div>
+      <div class="rspin_8kv7-item">{{ section.settings.msg3_prefix | default: '👀 Trending now!' }} <span class="rspin_8kv7-strong">{{ section.settings.msg3_bold | default: '769 people' }}</span> {{ section.settings.msg3_suffix | default: 'viewed in the last 24 hours!' }}</div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var view = document.getElementById('rspin_8kv7_view');
+      var line = document.getElementById('rspin_8kv7_line');
+      if(!view || !line) return;
+      var items = line.children;
+      if(!items.length) return;
+
+      var root = view.closest('.rspin_8kv7') || document.documentElement;
+      function cssVarInt(el, name, fallback){
+        var v = getComputedStyle(el).getPropertyValue(name).trim();
+        var n = parseInt(v, 10);
+        return isNaN(n) ? fallback : n;
+      }
+
+      var idx = 0;
+      var intervalMs = cssVarInt(root, '--interval-ms', 2500);
+      var rowH = 20;
+
+      function updateDims() {
+        if(!items[0]) return;
+        var h = items[0].offsetHeight;
+        if (h > 0) {
+          rowH = h;
+          view.style.height = rowH + 'px';
+          line.style.transform = 'translateY(' + (-idx * rowH) + 'px)';
+        }
+      }
+
+      setTimeout(updateDims, 50);
+      window.addEventListener('load', updateDims);
+
+      var resizeTO;
+      window.addEventListener('resize', function(){
+        clearTimeout(resizeTO);
+        resizeTO = setTimeout(updateDims, 200);
+      });
+
+      var spinInterval = setInterval(function(){
+        if(!line || !items.length) return;
+        idx = (idx + 1) % items.length;
+        line.style.transform = 'translateY(' + (-idx * rowH) + 'px)';
+      }, intervalMs);
+
+      if (typeof MutationObserver !== 'undefined' && document.body) {
+        var observer = new MutationObserver(function() {
+          if (!document.body.contains(view)) {
+            clearInterval(spinInterval);
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+      }
+    })();
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Rotating Spinner",
+  "settings": [
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font Size (px)",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin Top (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin Bottom (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "strong_color",
+      "label": "Bold Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "header",
+      "content": "Message 1"
+    },
+    {
+      "type": "text",
+      "id": "msg1_prefix",
+      "label": "Prefix",
+      "default": "🚀 Hurry up!"
+    },
+    {
+      "type": "text",
+      "id": "msg1_bold",
+      "label": "Bold Text",
+      "default": "500+ items"
+    },
+    {
+      "type": "text",
+      "id": "msg1_suffix",
+      "label": "Suffix",
+      "default": "sold in the last 3 days!"
+    },
+    {
+      "type": "header",
+      "content": "Message 2"
+    },
+    {
+      "type": "text",
+      "id": "msg2_prefix",
+      "label": "Prefix",
+      "default": "🛒 In the carts of"
+    },
+    {
+      "type": "text",
+      "id": "msg2_bold",
+      "label": "Bold Text",
+      "default": "125 people"
+    },
+    {
+      "type": "text",
+      "id": "msg2_suffix",
+      "label": "Suffix",
+      "default": "— buy before its gone!"
+    },
+    {
+      "type": "header",
+      "content": "Message 3"
+    },
+    {
+      "type": "text",
+      "id": "msg3_prefix",
+      "label": "Prefix",
+      "default": "👀 Trending now!"
+    },
+    {
+      "type": "text",
+      "id": "msg3_bold",
+      "label": "Bold Text",
+      "default": "769 people"
+    },
+    {
+      "type": "text",
+      "id": "msg3_suffix",
+      "label": "Suffix",
+      "default": "viewed in the last 24 hours!"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rotating Spinner"
+    }
+  ]
+}
+{% endschema %}
